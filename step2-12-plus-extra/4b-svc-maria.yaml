@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: at-your-service
+spec:
+  selector: # Services match a set of Pods using labels and selectors which are key/value pairs attached to objects
+    app: simply-maria
+  ports:
+  - protocol: TCP
+    port: 3306
+    targetPort: 3306

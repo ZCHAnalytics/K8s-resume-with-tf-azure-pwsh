@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: a-pod-for-retail-therapy
+spec: # specs for deployment resource
+  replicas: 1
+  selector:
+    matchLabels:
+      app: php
+  template: # blueprint for pods
+    metadata:
+      labels:
+        app: php
+    spec: # specs for web server pod
+      containers:
+      - name: apache
+        image: zulfiaa/ecom-web:v3
+        ports:
+        - containerPort: 80
+        # Step 4. Adding environment variables
+        env:
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: little-secrets
+              key: DB_PASSWORD
+        - name: DB_HOST
+          value: AT-YOUR-SERVICE # from service yaml
+        - name: DB_NAME
+          value: simplydatabase # value not a secret
+        - name: DB_USER
+          value: simplymaria # value not a secret
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: little-secrets
+              key: MYSQL_ROOT_PASSWORD
+  
+        command: ["/bin/bash", "-c"] 
+        args:
+        - |
+            echo "Running sql script..."
+            mariadb -h "$DB_HOST" -u root -p"$MYSQL_ROOT_PASSWORD" -e "\
+            CREATE DATABASE IF NOT EXISTS $DB_NAME; \
+            CREATE USER IF NOT EXISTS '$DB_USER'@'%' IDENTIFIED BY '$DB_PASSWORD'; \
+            USE $DB_NAME; \
+            GRANT ALL PRIVILEGES ON $DB_NAME.* TO '$DB_USER'@'%'; \
+            FLUSH PRIVILEGES;"
+
+            echo "Checking if table exists" 
+            if mariadb -h "$DB_HOST" -u "$DB_USER" -p"$DB_PASSWORD" -e "\
+                USE \`$DB_NAME\`; SELECT 1 FROM products LIMIT 1;" | grep -q "1"; then
+                echo "Table already exists. Skipping creation and insertion."
+            else
+                mysql -h "$DB_HOST" -u "$DB_USER" -p"$DB_PASSWORD" -e "\
+                USE \`$DB_NAME\`; \
+                CREATE TABLE products (\
+                    id mediumint(8) unsigned NOT NULL auto_increment, \
+                    Name varchar(255) default NULL, \
+                    Price varchar(255) default NULL, \
+                    ImageUrl varchar(255) default NULL, \
+                    PRIMARY KEY (id)\
+                ); \
+                INSERT INTO products (Name, Price, ImageUrl) VALUES \
+                ('Laptop','100','c-1.png'), \
+                ('Drone','200','c-2.png'), \
+                ('VR','300','c-3.png'), \
+                ('Tablet','50','c-5.png'), \
+                ('Watch','90','c-6.png'), \
+                ('Phone Covers','20','c-7.png'), \
+                ('Phone','80','c-8.png'), \
+                ('Laptop','150','c-4.png');"
+            fi
+            apache2ctl -D FOREGROUND

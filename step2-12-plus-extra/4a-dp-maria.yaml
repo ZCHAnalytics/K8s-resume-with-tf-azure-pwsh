@@ -1,0 +1,63 @@
+# maria-deploy.yaml 
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: a-pod-for-maria
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: simply-maria
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: simply-maria
+    spec:
+      containers:
+      - name: mariadb
+        image: mariadb:10.2.20
+
+        env:
+        - name: DB_HOST
+          value: at-your-service
+
+        - name: MYSQL_ROOT_PASSWORD
+          value: growYourRoots
+
+        - name: DB_PASSWORD
+          value: spillYourBeans
+
+        #- name: MYSQL_ROOT_PASSWORD
+        #  valueFrom:
+        #    secretKeyRef:
+        #              name: little-secrets
+        #      key: MYSQL_ROOT_PASSWORD
+
+        #- name: DB_PASSWORD
+        #  valueFrom:
+        #    secretKeyRef:
+        #      name: little-secrets
+        #      key: DB_PASSWORD
+
+        volumeMounts:
+        - name: and-sql-configured-maria
+          mountPath: /docker-entrypoint-initdb.d
+
+        ports:
+        - containerPort: 3306
+
+        resources:
+          limits:
+            cpu: "0.5"
+            memory: "1Gi"
+          requests:
+            cpu: "0.25"
+            memory: "1Gi"
+
+      volumes:
+      - name: and-sql-configured-maria
+        configMap:
+          name: and-sky-configured-maria
+

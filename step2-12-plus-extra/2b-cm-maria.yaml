@@ -1,0 +1,13 @@
+# and-sky-configured-maria.yaml 
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: and-sky-configured-maria
+
+data:
+  maria-initdb.sql: |-
+    CREATE DATABASE IF NOT EXISTS simplydatabase;
+    CREATE USER IF NOT EXISTS 'simplymaria'@'%' IDENTIFIED BY 'spillYourBeans';
+    USE simplydatabase;
+    GRANT ALL PRIVILEGES ON simplydatabase.* TO 'simplymaria'@'%';
+    FLUSH PRIVILEGES;

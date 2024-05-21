@@ -1,0 +1,5 @@
+      
+The code is provided by the KodeKloud for this challenge in their github repo. This command copies the git repository as web source code (not as repository):
+```pwsh
+& { mkdir abundant_source ; cd abundant_source ; curl -sL <link>/archive/master.tar.gz | tar -xzf - --strip-components=1 } | Out-Null
+```

@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: a-pod-for-maria
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: simply-maria
+  template:
+    metadata:
+      labels:
+        app: simply-maria
+    spec:
+      containers:
+      - name: mariadb
+        image: "{{ .Values.mariadb.image }}:{{ .Values.mariadb.tag }}"
+        imagePullPolicy: {{ .Values.mariadb.pullPolicy }}
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: little-secrets
+              key: MYSQL_ROOT_PASSWORD
+        ports:
+        - containerPort: 3306
+        # Extra Credit - add persistent volume claim 
+        volumeMounts:
+        - name: mariadb-storage
+          mountPath: /var/lib/mysql/pvc
+      volumes:
+      - name: mariadb-storage
+        persistentVolumeClaim:
+          claimName: mariadb-pvc

@@ -1,0 +1,33 @@
+db:
+  name: "simplydatabase"
+  user: "simplymaria"
+  host: "at-your-service"
+  passwordSecretName: "little-secrets"
+  passwordSecretKey: "DB_PASSWORD"
+  rootPasswordSecretName: "little-secrets"
+  rootPasswordSecretKey: "MYSQL_ROOT_PASSWORD"
+
+featureDarkMode: "true"
+
+image:
+  repository: zulfiaa/ecom-web
+  tag: v3
+  pullPolicy: IfNotPresent
+
+mariadb:
+  image: mariadb
+  tag: 10.2.20
+  pullPolicy: IfNotPresent
+
+replicaCount: 1
+
+hpa:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 10
+  cpu: 50
+
+resources: {}
+nodeSelector: {}
+tolerations: []
+affinity: {}
