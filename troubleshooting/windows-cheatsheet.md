@@ -1,6 +1,8 @@
 
 ## In powershell
 
+
+
 ### 1. To find files with CRLF line endings
 
 ```pwsh
@@ -19,6 +21,8 @@ Get-ChildItem -Recurse | ForEach-Object {
 (Get-Content entrypoint.sh -Raw) -replace "\r\n", "`n" | Set-Content -NoNewline converted_entrypoint.sh
 ```
 
+Or use git 
+![image](https://github.com/ZCHAnalytics/K8s-resume-with-tf-azure-pwsh/assets/146954022/e73090dc-8494-4e14-a635-1eb305b2dae5)
 
 
 ## in UBUNTU:
