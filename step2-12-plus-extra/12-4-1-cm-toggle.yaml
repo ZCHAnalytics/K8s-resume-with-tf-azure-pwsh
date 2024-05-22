@@ -1,6 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: and-sky-configured-toggle
-data:
-  FEATURE_DARK_MODE: "true"

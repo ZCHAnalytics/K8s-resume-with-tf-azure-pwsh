@@ -29,32 +29,13 @@ spec:
         - name: DB_PASSWORD
           value: spillYourBeans
 
-        #- name: MYSQL_ROOT_PASSWORD
-        #  valueFrom:
-        #    secretKeyRef:
-        #              name: little-secrets
-        #      key: MYSQL_ROOT_PASSWORD
-
-        #- name: DB_PASSWORD
-        #  valueFrom:
-        #    secretKeyRef:
-        #      name: little-secrets
-        #      key: DB_PASSWORD
-
         volumeMounts:
         - name: and-sql-configured-maria
-          mountPath: /docker-entrypoint-initdb.d
+          mountPath: /docker-entrypoint-initdb.d/create-my-bliss.sql
+          subPath: create-my-bliss.sql
 
         ports:
         - containerPort: 3306
-
-        resources:
-          limits:
-            cpu: "0.5"
-            memory: "1Gi"
-          requests:
-            cpu: "0.25"
-            memory: "1Gi"
 
       volumes:
       - name: and-sql-configured-maria

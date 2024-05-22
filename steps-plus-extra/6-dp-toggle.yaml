@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: a-pod-for-retail-therapy
+spec: # specs for deployment resource
+  replicas: 1
+  selector:
+    matchLabels:
+      app: php
+  template: # blueprint for pods
+    metadata:
+      labels:
+        app: php
+    spec: # specs for web server pod
+      containers:
+      - name: apache
+        image: zulfiaa/ecom-web:v1 # image without dark mode and banner
+        ports:
+        - containerPort: 80
+
+        # Step 4. Adding environment variables
+        env:
+        - name: DB_PASSWORD
+          value: spillYourBeans
+        - name: DB_HOST
+          value: at-your-service
+        - name: DB_NAME
+          value: simplydatabase
+        - name: DB_USER
+          value: simplymaria
+
+        # Step 6. Adding dark mode toggle
+        - name: FEATURE_DARK_MODE
+          valueFrom:
+            configMapKeyRef:
+              name: and-sky-configured-toggle
+              key: FEATURE_DARK_MODE
+
+        volumeMounts:
+        # Step 6. Adding dark mode style file
+        - name: config-toggle-volume
+          mountPath: /var/www/html/css/dark-mode.css
+          subPath: dark-mode.css
+
+        # Step 6. Replacing index.php file  
+        - name: config-toggle-volume
+          mountPath: /var/www/html/index.php
+          subPath: index.php       
+      
+      volumes:
+      # Step 6. Adding a toggle feature in ConfigMap
+      - name: config-toggle-volume
+        configMap:
+          name: and-sky-configured-toggle
+      

@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: a-pod-for-maria
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: simply-maria
+  template:
+    metadata:
+      labels:
+        app: simply-maria
+    spec:
+      containers:
+      - name: mariadb
+        image: mariadb:10.2.20
+        env:
+        # Step 12. Replacing hardcoded variables with secrets
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: little-secrets
+              key: MYSQL_ROOT_PASSWORD
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: little-secrets
+              key: DB_PASSWORD
+        ports:
+        - containerPort: 3306    
+
+        # Step 2. Adding entrypoint script to initialise the database
+        volumeMounts:
+        - name: and-sql-configured-maria
+          mountPath: /docker-entrypoint-initdb.d/create-my-bliss.sql
+          subPath: create-my-bliss.sql
+        
+        # Extra Credit - add persistent volume claim 
+        - name: maria-treasure-trove
+          mountPath: /var/lib/mysql/pvc
+
+      volumes:
+      - name: and-sql-configured-maria
+        configMap:
+          name: and-sky-configured-maria
+
+        # Extra Credit - add persistent volume claim 
+      - name: maria-treasure-trove
+        persistentVolumeClaim:
+          claimName: maria-entered-the-gringotts

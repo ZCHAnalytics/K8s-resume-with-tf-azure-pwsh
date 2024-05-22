@@ -43,3 +43,23 @@ dos2unix root_or_other_directory/*
 ```bash
 unix2dos root_or_other_directory/*
 ```
+
+without the unix2dox in one folder:
+```
+for file in step2-12-plus-extra/*; do
+  sed -i 's/\r$//' "$file"
+done
+```
+
+in subfodlers:
+find step2-12-plus-extra -type f -exec sed -i 's/\r$//' {} +
+
+
+verbose:
+for file in step2-12-plus-extra/*; do
+  echo "Processing $file"
+  sed -i 's/\r$//' "$file"
+done
+
+
+

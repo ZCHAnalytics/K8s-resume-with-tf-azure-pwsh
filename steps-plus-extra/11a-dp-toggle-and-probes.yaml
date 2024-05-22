@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: a-pod-for-retail-therapy
+spec: # specs for deployment resource
+  replicas: 1
+  selector:
+    matchLabels:
+      app: php
+  template: # blueprint for pods
+    metadata:
+      labels:
+        app: php
+    spec: # specs for web server pod
+      containers:
+      - name: apache
+        image: zulfiaa/ecom-web:v3
+        ports:
+        - containerPort: 80
+        # Step 11 Add probes
+        livenessProbe:
+          httpGet:
+            path: /probes/alive-and-kicking.php
+            port: 80
+          initialDelaySeconds: 15
+          periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /probes/alive-and-kicking.php
+            port: 80
+          initialDelaySeconds: 10
+          periodSeconds: 5        
+  
+        # Step 4. Adding environment variables
+        env:
+        - name: DB_PASSWORD
+          value: spillYourBeans
+        - name: DB_HOST
+          value: at-your-service
+        - name: DB_NAME
+          value: simplydatabase
+        - name: DB_USER
+          value: simplymaria
+
+        # Step 6: add dark mode toggle
+        - name: FEATURE_DARK_MODE
+          valueFrom:
+            configMapKeyRef:
+              name: and-sky-configured-toggle-and-probes
+              key: FEATURE_DARK_MODE
+        volumeMounts:
+        - name: probes-volume
+          mountPath: /var/www/html/probes
+
+      volumes:          
+      - name: probes-volume
+        configMap:
+          name: and-sky-configured-toggle-and-probes

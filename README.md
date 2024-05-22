@@ -205,7 +205,6 @@ USEFUL COMMANDS:
 kubectl exec -it <pod_name> -- /bin/bash
 mysql -u <username> -p<password>-uro
 SELECT User FROM mysql.user;
-
 mysql -u simplymaria -p
 
 ## Step 13: Document Your Process

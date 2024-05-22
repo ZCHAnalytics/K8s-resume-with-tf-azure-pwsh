@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: a-pod-for-retail-therapy
+spec: # specs for deployment resource
+  replicas: 1
+  selector:
+    matchLabels:
+      app: php
+  template: # blueprint for pods
+    metadata:
+      labels:
+        app: php
+    spec: # specs for web server pod
+      containers:
+      - name: apache
+        image: zulfiaa/ecom-web:v3 # Image with revised index.php with banner, and a dark-mode.css from Step 6
+        ports:
+        - containerPort: 80
+        # Step 4. Adding environment variables
+        env:
+        - name: DB_PASSWORD
+          value: spillYourBeans
+        - name: DB_HOST
+          value: at-your-service
+        - name: DB_NAME
+          value: simplydatabase
+        - name: DB_USER
+          value: simplymaria
+
+        # Step 6: Adding dark mode toggle
+        - name: FEATURE_DARK_MODE
+          valueFrom:
+            configMapKeyRef:
+              name: and-sky-configured-toggle
+              key: FEATURE_DARK_MODE
