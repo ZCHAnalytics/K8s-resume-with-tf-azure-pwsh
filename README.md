@@ -2,6 +2,8 @@
 
 This is my take on the Kubernetes Resume Challenge using Terraform, Helm, Azure and Powershell. The Challenge is prepared by people behind CLoud Resume Challenge and KodeKloud Academy. JOin the challenge here: https://cloudresumechallenge.dev/docs/extensions/kubernetes-challenge/
 
+![image](https://github.com/ZCHAnalytics/k8s-resume-challenge/assets/146954022/1e4c4301-3355-420f-bf73-1cf34a692a89)
+
 The project was seemingly prepared for Linux environment, so I added an extra complexity by opting for a Windows environment and Powershell. This required some extra [windows troubleshooting](windows-troubleshooting). I also added extra step to use Terraform to make project closer to real-life scenarios where IaaS deployment are used. 
 
 # Pre-requisites 
@@ -90,10 +92,6 @@ For second option, which is an external service yaml, check this [service file](
 When the database connection does not work, website will show and error of some sort, like this one:
 
 ![image](https://github.com/ZCHAnalytics/kubernetes-challenge/assets/146954022/11081575-ae0b-463f-8bd7-11f450345641)
-
-< Troubleshooting: turned out i needed to change the commands from mysql to mariadb inside the mariadb container and also change the Dockerfile to add mysql client and mysql server in addition to mysqli client. That added 300mb more of disk size but build time was still around the same. 
-
-![image](https://github.com/ZCHAnalytics/k8s-resume-challenge/assets/146954022/1e4c4301-3355-420f-bf73-1cf34a692a89)
 
 ## Step 6: Implement Configuration Management by add a feature toggle
 - [x] Modify the Web Application: Add a simple feature toggle in the application code (e.g., an environment variable FEATURE_DARK_MODE that enables a CSS dark theme).
