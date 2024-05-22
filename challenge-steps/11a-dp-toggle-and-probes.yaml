@@ -42,12 +42,13 @@ spec: # specs for deployment resource
         - name: DB_USER
           value: simplymaria
 
-        # Step 6: add dark mode toggle
+        # Step 6: Add dark mode toggle
         - name: FEATURE_DARK_MODE
           valueFrom:
             configMapKeyRef:
               name: and-sky-configured-toggle-and-probes
               key: FEATURE_DARK_MODE
+
         volumeMounts:
         - name: probes-volume
           mountPath: /var/www/html/probes

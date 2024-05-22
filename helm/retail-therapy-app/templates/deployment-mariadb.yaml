@@ -24,11 +24,21 @@ spec:
               key: MYSQL_ROOT_PASSWORD
         ports:
         - containerPort: 3306
-        # Extra Credit - add persistent volume claim 
+        
         volumeMounts:
-        - name: mariadb-storage
+        - name: and-sql-configured-maria
+          mountPath: /docker-entrypoint-initdb.d/create-my-bliss.sql
+          subPath: create-my-bliss.sql
+        # Extra Credit - add persistent volume claim         
+        - name: maria-treasure-trove
           mountPath: /var/lib/mysql/pvc
-      volumes:
-      - name: mariadb-storage
+      volumes:      
+      - name: and-sql-configured-maria
+        configMap:
+          name: and-sky-configured-maria
+      # Extra Credit - add persistent volume claim         
+
+      - name: maria-treasure-trove
         persistentVolumeClaim:
-          claimName: mariadb-pvc
+          claimName: maria-entered-the-gringotts
+
