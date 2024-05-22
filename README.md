@@ -186,6 +186,16 @@ helm create retail-therapy-app
 
 Create a .github/workflows/deploy.yml file to build the Docker image, push it to Docker Hub, and update the Kubernetes deployment upon push to the main branch.
 
+Cheats: as kubectl config can be rather large, good to check what is in there
+
+```pwsh
+kubeConfig = kubectl config view --minify --context=aks-retail-rg-5603
+base64EncodedConfig = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($kubeConfig))
+base64EncodedConfig
+```
+
+
+
 
 ## Project Directory 
 
