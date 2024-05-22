@@ -18,12 +18,12 @@ spec:
         imagePullPolicy: {{ .Values.mariadb.pullPolicy }}
         ports:
         - containerPort: 3306        
-        env:
-        - name: MYSQL_ROOT_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: little-secrets
-              key: MYSQL_ROOT_PASSWORD
+#        env:
+#        - name: MYSQL_ROOT_PASSWORD
+#          valueFrom:
+#            secretKeyRef:
+#              name: little-secrets
+#              key: MYSQL_ROOT_PASSWORD
         
         volumeMounts:
         - name: and-sql-configured-maria

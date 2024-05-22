@@ -16,4 +16,4 @@ WORKDIR /var/www/html
 # Promotional banner added to index.php 
 # Dark-mode toggle added to index.php 
 # A dark-mode.css file added to css folder
-COPY source-code/ /var/www/html/
+COPY abundant-source/ /var/www/html/

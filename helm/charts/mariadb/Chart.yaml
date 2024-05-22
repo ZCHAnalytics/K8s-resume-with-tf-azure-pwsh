@@ -1,0 +1,10 @@
+apiVersion: v2
+name: mariadb
+description: A Helm chart for deploying Mariadb database server
+
+version: 0.1.0
+appVersion: 10.5.12
+keywords:
+  - mariadb
+  - database
+

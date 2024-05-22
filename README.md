@@ -16,13 +16,14 @@ Using Helm was an extra credit! So I helmified all yaml files and created a char
 
 ## CI/CD with GitHub Workflows
 - GitHub secrets and tokens 
+[.github/workflows](.github/workflows/deploy.yml)
 
 ## and all the steps prior to this point... 
-Prior to deploying Infrastructure as a Code, the challenge involved step by step process of configuring and testing progressively growing components. These steps are outlined below. 
-- Creating Dockerfile for Apache server with the relevant expensions (configuring  + CLI)
+Prior to deploying Infrastructure as a Code, the challenge involved step by step process of configuring and testing progressively growing components as listed below: 
+- Creating Dockerfile for Apache server with the relevant expensions 
 - Azure Kubernetes Cluster creation (CLI)
-- Kubernetes service files for internal and external connections (configuring),
-- Secrets for storing sensitive data ()
+- Kubernetes service files for internal and external connections
+- Secrets for storing sensitive data
 - configMaps for toggles
 - Kubernetes deployment files for MariaDB database and apache server
 - Updating source code in Dockerfile to include dark-mode style, toggle features and a promotional banner for marketing campaign. 
@@ -34,7 +35,7 @@ KodeKloud offers the Certified Kubernetes Application Developer (CKAD) course to
 I am very keen to get a Kubernetes certification, as soon as I finished preparing for the Terraform Associate exam! Watch this space.... 
 
 ## Step 2: Tasks - Containerise E-Commerce Website and Database
-- [x] Create a Dockerfile with php:7.4-apache base image, mysqli extension for PHP and the application source code.
+- [x] Create a Dockerfile with php:7.4-apache base image, mysqli extension, the application source code.
 - [x] Update database connection strings to point to a Kubernetes service named mysql-service.
 - [x] Build and Push the Docker Image
 - [x] Database Containerization
@@ -48,8 +49,6 @@ Second, I located a php file called index.php that uses a mysqli function to con
 
 As for the Docker image, I used a more recent php-apache version for the Dockerfile, hoping it will integrate better with kubectl and mariadb versions I use. I also added pdo packages to give the container ability to run SQl commands. 
 
-![image](https://github.com/ZCHAnalytics/k8s-resume-challenge/assets/146954022/afcf462b-53ef-44fc-b4bc-41d836d404f1)
-
 `docker build -t zulfia/<your-chosen-image-name-for-posterity>:v1 .`  
 `docker push zulfia/<your-chosen-image-name-for-posterity>:v1`
 
@@ -61,7 +60,7 @@ The last task in this Step was to configure database containerisation. I place t
 ## Step 3. Set up Kubernetes on a Public Cloud Provider
 - [x] Cluster creation.
 
-I created a one line command to simplify the creation of an Azure Kubernetes Cluster. This command creates environmental variables and then the necessary resources in one go, leaving me free to go away and grate some ginger for tea.
+I created a command to simplify the creation of an Azure Kubernetes Cluster. This command creates environmental variables and then the necessary resources in one go, leaving me free to go away and grate some ginger for tea.
 ```pwsh
 $ID = Get-Random -Minimum 1000 -Maximum 9999 ; $RG = "ecommerce-rg-$ID" ; $LOC = "uksouth" ; $CLUSTER_NAME = "aks-$RG" ; $DNS_LABEL = "dns-label-$RG" ; az group create --name $RG --location $LOC ; az aks create -g $RG --name $CLUSTER_NAME --enable-managed-identity --node-count 1 --generate-ssh-keys ; az aks get-credentials -g $RG --name $Cluster_NAME ; kubectl get nodes
 ```
@@ -69,16 +68,14 @@ $ID = Get-Random -Minimum 1000 -Maximum 9999 ; $RG = "ecommerce-rg-$ID" ; $LOC =
 - [x] 4.1. Kubernetes deployment 
 
 I am asked to hardcode the root password and the password for the new future user. It is a bit cringe-inducing but somehow adding secrets at a later stage (Step 12) proved to be complicated. So I am happy to tried both options and observed how differently processes worked. So, now the e-commerce web application is running on Kubernetes, with pods managed by the Deployment.
-To test, lets create a sample database:
-```pwsh
-kubectl exec <pod-hash mariadb> -- mariadb -uroot -pspillYourBeans -e "create database if not exists k8s; show databases;"
-```
+To test, lets enterthe container and run some commands:
+
 ![image](https://github.com/ZCHAnalytics/kubernetes-challenge/assets/146954022/a80ebcca-5b73-4010-af0f-5bfa3d95c91b)
 
 ## Step 5: Expose Your Website [v]
 - [x] Service creation with Load Balancer
 
-We could choose to do this step via CLI command or a yaml file. I am sharing both ways here: 
+We could choose to do this step via CLI command or a yaml file. 
 Via CLI
 ```pwsh
 kubectl expose deploy/deploy-retail-therapy --port 80 --target-port 80 --type LoadBalancer --name=php-service
@@ -88,13 +85,11 @@ service/php-service exposed
 
 For second option, which is an external service yaml, check this [service file](5a-svc-web.yaml)
 
-Website is not public but the mysqli link to a backend database does not work, so theraputic effect of my retail sit is not yet possible. 
+When the database connection does not work, website will show and error of some sort, like this one:
 
 ![image](https://github.com/ZCHAnalytics/kubernetes-challenge/assets/146954022/11081575-ae0b-463f-8bd7-11f450345641)
 
 < Troubleshooting: turned out i needed to change the commands from mysql to mariadb inside the mariadb container and also change the Dockerfile to add mysql client and mysql server in addition to mysqli client. That added 300mb more of disk size but build time was still around the same. 
-
-Again, this is an option of creating the database with CLI command. However, I wanted keep a nice orderly sequence of yaml files. The CLI steps are in this <file>
 
 ![image](https://github.com/ZCHAnalytics/k8s-resume-challenge/assets/146954022/1e4c4301-3355-420f-bf73-1cf34a692a89)
 
@@ -111,10 +106,12 @@ If I set the toggle to false and re-apply configmap and deploy again, the websit
 
 ## Step 7: Scale Web Application to prepare for a marketing campaign expected to triple traffic.
 - [x] Evaluate Current Load: Use kubectl get pods to assess the current number of running pods.
-  ![image](https://github.com/ZCHAnalytics/k8s-resume-challenge/assets/146954022/8213670e-9e45-45bb-81ed-4b4b75b768e5)
 - [x] Scale Up: Increase replicas in deployment or use kubectl scale deployment/ecom-web --replicas=6 to handle the increased load.
-![image](https://github.com/ZCHAnalytics/k8s-resume-challenge/assets/146954022/b74cdbc1-f1a9-4412-8795-93f30ba9e78f)
 - [x] Monitor Scaling: Observe the deployment scaling up with kubectl get pods.
+
+![image](https://github.com/ZCHAnalytics/k8s-resume-challenge/assets/146954022/8213670e-9e45-45bb-81ed-4b4b75b768e5)
+
+![image](https://github.com/ZCHAnalytics/k8s-resume-challenge/assets/146954022/b74cdbc1-f1a9-4412-8795-93f30ba9e78f)
 
 ## Step 8: Perform a Rolling Update to include a new promotional banner for the marketing campaign.
 - [x]    Update Application: Modify the web application’s code to include the promotional banner.
@@ -158,17 +155,11 @@ Again, I searched the soure code direcotry for any endpoint, health, live, ready
 - [x]    Create Secret and ConfigMap: For sensitive data like DB credentials, use a Secret. For non-sensitive data like feature toggles, use a ConfigMap.
 - [x]    Update Deployment: Reference the Secret and ConfigMap in the deployment to inject these values into the application environment.
 
-Finally, I can work with secres and stop cringing)....
+Finally, I can work with secrets and stop cringing....
 generate base64 code:
 ```bash
 echo -n "spillYourBeans" | base64
 ```
-To test, lets create a sample database:
-```pwsh
-kubectl exec pod-hash mariadb -- mariadb -uroot -pspillYourBeans -e "create database if not exists k8s; show databases;"
-```
-![image](https://github.com/ZCHAnalytics/kubernetes-challenge/assets/146954022/a80ebcca-5b73-4010-af0f-5bfa3d95c91b)
-
 USEFUL COMMANDS:
 kubectl exec -it <pod_name> -- /bin/bash
 mysql -u <username> -p<password>-uro
@@ -180,18 +171,20 @@ mysql -u simplymaria -p
 - [x]    Write Documentation: Create a README.md or a blog post detailing each step, decisions made, and how challenges were overcome.
 
 ## Extra credit - Package Everything in Helm
-- [x]    Create Helm Chart: Start by creating a Helm chart for your application. This involves setting up a chart directory with the necessary templates for your Kubernetes resources.
-- [x]    Define Values: Customize your application deployment by defining variables in the values.yaml file. This allows for flexibility and reusability of your Helm chart across different environments or configurations.
-- [x]    Package and Deploy: Use Helm commands to package your application into a chart and deploy it to your Kubernetes cluster. Ensure to test your chart to verify that all components are correctly configured and working as expected.
+- [x] Create Helm Chart: Start by creating a Helm chart for your application. This involves setting up a chart directory with the necessary templates for your Kubernetes resources.
+- [x] Define Values: Customize your application deployment by defining variables in the values.yaml file. This allows for flexibility and reusability of your Helm chart across different environments or configurations.
+- [x] Package and Deploy: Use Helm commands to package your application into a chart and deploy it to your Kubernetes cluster. Ensure to test your chart to verify that all components are correctly configured and working as expected.
 ```
 helm create retail-therapy-app
 ```
 ## Extra credit - Implement Persistent Storage for the MariaDB database across pod restarts and redeployments.
-- [x]    Create a PVC: Define a PersistentVolumeClaim for MariaDB storage needs.
-- [x]    Update MariaDB Deployment: Modify the deployment to use the PVC for storing database data.
+- [x] Create a PVC: Define a PersistentVolumeClaim for MariaDB storage needs.
+- [x] Update MariaDB Deployment: Modify the deployment to use the PVC for storing database data.
 
 ## Extra credit - Implement Basic CI/CD Pipeline
-- []    GitHub Actions Workflow: Create a .github/workflows/deploy.yml file to build the Docker image, push it to Docker Hub, and update the Kubernetes deployment upon push to the main branch.
+- [] GitHub Actions Workflow.
+
+Create a .github/workflows/deploy.yml file to build the Docker image, push it to Docker Hub, and update the Kubernetes deployment upon push to the main branch.
 
 
 ## Project Directory 

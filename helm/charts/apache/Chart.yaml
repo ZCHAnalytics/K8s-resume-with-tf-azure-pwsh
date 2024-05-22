@@ -1,5 +1,5 @@
 apiVersion: v2
-name: retail-therapy-app
+name: apache
 description: A Helm chart for Kubernetes
 
 type: application

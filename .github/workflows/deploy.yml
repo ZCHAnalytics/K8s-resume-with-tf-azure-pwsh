@@ -44,10 +44,11 @@ jobs:
 
     - name: Configure kubectl
       run: |
-        echo "${{ secrets.KUBECONFIG }}" | base64 --decode > C:\Users\zulfi\.kube
+        echo "${{ secrets.KUBECONFIG }}" | base64 --decode > $HOME/.kube/config
 
     - name: Deploy to Kubernetes
       run: |
         kubectl set image deployment/a-pod-for-retail-therapy a-pod-for-retail-therapy=zulfiaa/ecom-web:v3
+
 # [Convert]::ToBase64String([System.IO.File]::ReadAllBytes("C:\Users\zulfi\.kube\config")) > kubeconfig.base64
 
