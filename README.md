@@ -2,14 +2,15 @@
 
 This is my take on the Kubernetes Resume Challenge using Terraform, Helm, Azure and Powershell. The Challenge is prepared by people behind CLoud Resume Challenge and KodeKloud Academy. JOin the challenge here: https://cloudresumechallenge.dev/docs/extensions/kubernetes-challenge/
 
-The project was simimgly prepared for Linux environment, so I added an extra complexity by opting Windows environment and Powershell. This required some extra steps for troubleshooting. 
+The project was seemingly prepared for Linux environment, so I added an extra complexity by opting for a Windows environment and Powershell. This required some extra troubleshooting. 
 
-I also added extra step to use terraform as using helm only to deploy web server and database to make project closer to real-life scenarios where IaaS deployment are used. 
+I also added extra step to use Terraform to make project closer to real-life scenarios where IaaS deployment are used. 
 
 # Pre-requisites 
 Azure, Kubectl, Docker, Terraform, Helm CLI
 ability to convert CRLF to LF
 source code from KodeKloud
+and a bucket of sheer willpower... 
 
 🌍  Project Directory Tree
 ├───dockerfilewithbanner
@@ -27,52 +28,51 @@ source code from KodeKloud
 └───terraform
 
 ## Terrraform 
-I used Terraform to combined the creation of Azure Kubernetes Cluster, pod with a MariaDB serverand a pod with Apache server to host website called "Retail Heaven".
+I used Terraform to combined the creation of Azure Kubernetes Cluster, one pod for a MariaDB server and another one for Apache server to host website called "Retail Heaven".
 For specifics, please check this folder [terraform](terraform).
 
 ## Helm 
 Using Helm was an extra credit, so I helmified all yaml files and created a chart that used Azure Kubernetes Cluster to configure environmentla variables, create database, new user with full privileges to create table 'products' and populate it with values. The end result is the retail website! 
 
-## Background work 
+## CI/CD with GitHub Workflows
 
-Prior to deploying Infrastructure as a Code, the challenge involved step by step process of configuring and testing progressivley complex assets. These steps are outlined below. 
+## and everything in the background
+
+Prior to deploying Infrastructure as a Code, the challenge involved step by step process of configuring and testing progressively growing components. These steps are outlined below. 
 
 ## Step 1: Certification
+KodeKloud offers the Certified Kubernetes Application Developer (CKAD) course to equip developers with the knowledge and skills needed to tackle this challenge effectively. 
 I am very keen to get a Kubernetes certification, as soon as I finished preparing for the Terraform Associate exam! Watch this space.... 
 
-## Step 2: Containerise E-Commerce Website and Database
-- [x] 2.1  Copy the pre-configured web application code into the project directory
+## Step 2: Tasks - Containerise E-Commerce Website and Database
+- [x] Create a Dockerfile with php:7.4-apache base image, mysqli extension for PHP and the application source code.
+- [x] Update database connection strings to point to a Kubernetes service named mysql-service.
+- [x] Build and Push the Docker Image
+- [x] Database Containerization
 
-The code is provided by the KodeKloud for this challenge in their github repo. This command copies the git repository as web source code (not as repository):
+Implementation:
+First, I copied the source code from Kode Kloud gitgub repository to the project directory (as an archive, without cloning the repository itself):
   ```pwsh
   & { mkdir abundant_source ; cd abundant_source ; curl -sL <link>/archive/master.tar.gz | tar -xzf - --strip-components=1 } | Out-Null
   ```
-- [x] 2.2  Locate and check the configuration file for connection method to database
-  I localted a php file called index.php that uses a mysqli function to connect to the database using cluster variables. I made a note of how variables should be named for correct interpolation: DB_HOST, DB_USER, DB_NAME, DB_PASSWORD.
+Second, I located a php file called index.php that uses a mysqli function to connect to the database using cluster variables. I just tidied up the code, indentation and compressed it a bit (for better readability and future troubleshooting). I made a note of how mysqli function retrives database variables (as DB_HOST, DB_USER, DB_NAME, DB_PASSWORD) and used these names for Kubernetes service and secrets. This way, the apache container can interpolate the values from the cluster environment in oeprating the database in a separate container.
 
-- [x] 2.3  Configure Dockerfile for web app
-  I created an initial Dockerfile tagged as version 1 that contained mysqli extension for apache server to make the connection to the database. Additionally, I had to add other database packages as I decided to perform all SQL oepration from within the apache container. I just tidied up the code, indentation and compressed it a bit (for better readability and future troubleshooting). I also opted for a more recent version of an Apache image to make sure it worked with more up-to-date mariadb and kubectl.
+As for the Docker image, I used a more recent php-apache version for the Dockerfile, hoping it will integrate better with kubectl and mariadb versions I use. I also added pdo packages to give the container ability to run SQl commands. 
 
 ![image](https://github.com/ZCHAnalytics/k8s-resume-challenge/assets/146954022/afcf462b-53ef-44fc-b4bc-41d836d404f1)
 
+`docker build -t zulfia/<your-chosen-image-name-for-posterity>:v1 .`  
+`docker push zulfia/<your-chosen-image-name-for-posterity>:v1`
+
+The last task in this Step was to configure database containerisation. I place the sql script in the php deployment file, instead of the mariadb deployment file thus avodiging the use of ConfigMap. 
+
 <Note on Windows: As I am using Windows and containers run on linux, I need to make sure that  the relevant files have LF ending instead of CRLF. There are many ways of doing so as shown here <link> but usually git converts them automatically when adding. To avoid a lot of commit messages, i occassionally converted files in the powershell terminal directly. 
-
-Then from the project directory Dockerfile is ready to be built! 
-```pwsh
-docker build -t zulfia/<your-chosen-image-name-for-posterity>:v1 .
-docker push zulfia/<your-chosen-image-name-for-posterity>:v1
-```
 <Note on Windows: As Docker Engine runs on Ubuntu, I also have to run WSL which can takes up more memory. As as soon as I push the image, I close stop Docker Desktop.
-
 - [x] 3.2. Create a Kubernetes cluster on Azure
-Before I resorted to Tterraform, I created a one line command to simplify the creation of an Azure Kubernetes Cluster. This command creates environmental variables and then the necessary resources in one go, while I could grate some ginger for tea.
+Before I resorted to Terraform, I created a one line command to simplify the creation of an Azure Kubernetes Cluster. This command creates environmental variables and then the necessary resources in one go, leaving me free to go away and grate some ginger for tea.
 ```pwsh
 $ID = Get-Random -Minimum 1000 -Maximum 9999 ; $RG = "ecommerce-rg-$ID" ; $LOC = "uksouth" ; $CLUSTER_NAME = "aks-$RG" ; $DNS_LABEL = "dns-label-$RG" ; az group create --name $RG --location $LOC ; az aks create -g $RG --name $CLUSTER_NAME --enable-managed-identity --node-count 1 --generate-ssh-keys ; az aks get-credentials -g $RG --name $Cluster_NAME ; kubectl get nodes
 ```
-Outcome in Azure portal:
-
-![image](https://github.com/ZCHAnalytics/k8s-resume-challenge/assets/146954022/7b1e5ded-edc2-49c2-a91f-cd007b78757d)
-
 ## Step 4: Deploy E-commerce Website to Kubernetes
 
 - [x] 4.1. Configure website and mariadb deployment files
