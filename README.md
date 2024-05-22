@@ -11,6 +11,8 @@ Azure, Kubectl, Docker, Terraform, Helm CLI, attention to CRLF and LF, source co
 I used Terraform to combined the creation of Azure Kubernetes Cluster, one pod for a MariaDB server and another one for Apache server to host website called "Retail Heaven".
 For specifics, please check this folder [terraform](terraform).
 
+![image](https://github.com/ZCHAnalytics/K8s-resume-with-tf-azure-pwsh/assets/146954022/f732f709-77dd-44e8-89f8-bc0b8e986f17)
+
 ## Helm 
 Using Helm was an extra credit! So I helmified all yaml files and created a chart that used Azure Kubernetes Cluster to configure environmentla variables, create database, new user with full privileges to create table 'products' and populate it with values. The end result is the retail website! You can check my helm files here [helm](helm).
 
