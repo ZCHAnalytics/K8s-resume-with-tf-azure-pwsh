@@ -15,10 +15,19 @@ For specifics, please check this folder [terraform](terraform).
 Using Helm was an extra credit! So I helmified all yaml files and created a chart that used Azure Kubernetes Cluster to configure environmentla variables, create database, new user with full privileges to create table 'products' and populate it with values. The end result is the retail website! You can check my helm files here [helm](helm).
 
 ## CI/CD with GitHub Workflows
+- GitHub secrets and tokens 
 
 ## and all the steps prior to this point... 
 Prior to deploying Infrastructure as a Code, the challenge involved step by step process of configuring and testing progressively growing components. These steps are outlined below. 
-
+- Creating Dockerfile for Apache server with the relevant expensions
+- Kubernetes service files for internal and external connections,
+- Secrets for storing sensitive data
+- configMaps for toggles
+- Kubernetes deployment files for MariaDB database and apache server
+- Updating source code in Dockerfile to include dark-mode style, toggle features and a promotional banner for marketing campaign. 
+- Scaling the application, rolling back the deployment, testing liveliness and readiness
+- Creating persistent storage for the database.  
+  
 ## Step 1: Certification
 KodeKloud offers the Certified Kubernetes Application Developer (CKAD) course to equip developers with the knowledge and skills needed to tackle this challenge effectively. 
 I am very keen to get a Kubernetes certification, as soon as I finished preparing for the Terraform Associate exam! Watch this space.... 
