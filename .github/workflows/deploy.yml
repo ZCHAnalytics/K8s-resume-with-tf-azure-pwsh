@@ -48,7 +48,7 @@ jobs:
 
     - name: Deploy to Kubernetes
       run: |
-        kubectl set image deployment/a-pod-for-retail-therapy a-pod-for-retail-therapy=zulfiaa/ecom-web:v3
+        kubectl set image deployment/a-pod-for-retail-therapy a-pod-for-retail-therapy=zulfiaa/ecom-web:v4
 
 # [Convert]::ToBase64String([System.IO.File]::ReadAllBytes("C:\Users\zulfi\.kube\config")) > kubeconfig.base64
 
