@@ -189,6 +189,11 @@ helm create retail-therapy-app
 Create a .github/workflows/deploy.yml file to build the Docker image, push it to Docker Hub, and update the Kubernetes deployment upon push to the main branch.
 
 
+Add GitHub Action secrets to the repository:
+
+![image](https://github.com/ZCHAnalytics/K8s-resume-with-tf-azure-pwsh/assets/146954022/d82d4915-6951-44da-89ac-b6753d774082)
+
+
 ## Project Directory 
 
 🌍  Project Directory Tree
