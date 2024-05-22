@@ -1,4 +1,4 @@
-name: Deploy
+name: CI/CD Pipelines
 
 on:
   push:
@@ -13,6 +13,9 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
     - name: Login to Docker Hub using GitHub PAT
       uses: docker/login-action@v2
       with:
@@ -20,9 +23,11 @@ jobs:
         password: ${{ secrets.GHCR_PAT }}
 
     - name: Build and push Docker image
-      run: |
-        docker build -t zulfiaa/ecom-web:v3 .
-        docker push zulfiaa/ecom-web:v3
+      uses: docker/build-push-action@v4
+      with:
+        context: .
+        push: true
+        tags: zulfiaa/ecom-web:v3
 
   deploy:
     needs: build
@@ -32,11 +37,17 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Configure kubectl
-      uses: azure/k8s-set-context@v1
+    - name: Set up kubectl
+      uses: azure/setup-kubectl@v3
       with:
-        kubeconfig: ${{ secrets.KUBE_CONFIG_DATA }}
+        version: 'latest'
+
+    - name: Configure kubectl
+      run: |
+        echo "${{ secrets.KUBECONFIG }}" | base64 --decode > C:\Users\zulfi\.kube
 
     - name: Deploy to Kubernetes
       run: |
-        kubectl apply -f path/to/kubernetes/yaml
+        kubectl set image deployment/a-pod-for-retail-therapy a-pod-for-retail-therapy=zulfiaa/ecom-web:v3
+# [Convert]::ToBase64String([System.IO.File]::ReadAllBytes("C:\Users\zulfi\.kube\config")) > kubeconfig.base64
+

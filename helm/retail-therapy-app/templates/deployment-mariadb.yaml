@@ -16,14 +16,14 @@ spec:
       - name: mariadb
         image: "{{ .Values.mariadb.image }}:{{ .Values.mariadb.tag }}"
         imagePullPolicy: {{ .Values.mariadb.pullPolicy }}
+        ports:
+        - containerPort: 3306        
         env:
         - name: MYSQL_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
               name: little-secrets
               key: MYSQL_ROOT_PASSWORD
-        ports:
-        - containerPort: 3306
         
         volumeMounts:
         - name: and-sql-configured-maria
@@ -32,12 +32,12 @@ spec:
         # Extra Credit - add persistent volume claim         
         - name: maria-treasure-trove
           mountPath: /var/lib/mysql/pvc
+
       volumes:      
       - name: and-sql-configured-maria
         configMap:
           name: and-sky-configured-maria
       # Extra Credit - add persistent volume claim         
-
       - name: maria-treasure-trove
         persistentVolumeClaim:
           claimName: maria-entered-the-gringotts

@@ -1,4 +1,3 @@
-# maria-deploy.yaml 
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -8,8 +7,6 @@ spec:
   selector:
     matchLabels:
       app: simply-maria
-  strategy:
-    type: Recreate
   template:
     metadata:
       labels:
@@ -18,14 +15,13 @@ spec:
       containers:
       - name: mariadb
         image: mariadb:10.2.20
-
+        ports:
+        - containerPort: 3306        
         env:
         - name: DB_HOST
           value: at-your-service
-
         - name: MYSQL_ROOT_PASSWORD
           value: growYourRoots
-
         - name: DB_PASSWORD
           value: spillYourBeans
 
@@ -33,9 +29,6 @@ spec:
         - name: and-sql-configured-maria
           mountPath: /docker-entrypoint-initdb.d/create-my-bliss.sql
           subPath: create-my-bliss.sql
-
-        ports:
-        - containerPort: 3306
 
       volumes:
       - name: and-sql-configured-maria
