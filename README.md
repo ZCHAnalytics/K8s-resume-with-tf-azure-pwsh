@@ -201,6 +201,9 @@ helm upgrade retail-therapy-app ./helm/app-with-banner
 
 Create a .github/workflows/deploy.yml file to build the Docker image, push it to Docker Hub, and update the Kubernetes deployment upon push to the main branch.
 
+hide your azure subscription ID;
+![image](https://github.com/ZCHAnalytics/K8s-resume-with-tf-azure-pwsh/assets/146954022/29d71b2d-f7a1-4af1-9239-46e364e77ec0)
+
 ## Project Directory 
 
 🌍  Project Directory Tree
