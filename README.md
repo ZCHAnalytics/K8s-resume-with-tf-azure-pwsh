@@ -101,10 +101,6 @@ service/php-service exposed
 
 For second option, which is an external service yaml, check this [service file](5a-svc-web.yaml)
 
-When the database connection does not work, website will show and error of some sort, like this one:
-
-![image](https://github.com/ZCHAnalytics/kubernetes-challenge/assets/146954022/11081575-ae0b-463f-8bd7-11f450345641)
-
 ## Step 6: Implement Configuration Management by add a feature toggle
 - [x] Modify the Web Application: Add a simple feature toggle in the application code (e.g., an environment variable FEATURE_DARK_MODE that enables a CSS dark theme).
 - [x] Use ConfigMaps: Create a ConfigMap named feature-toggle-config with the data FEATURE_DARK_MODE=true.
@@ -201,7 +197,12 @@ helm upgrade retail-therapy-app ./helm/app-with-banner
 
 Create a .github/workflows/deploy.yml file to build the Docker image, push it to Docker Hub, and update the Kubernetes deployment upon push to the main branch.
 
-hide your azure subscription ID;
+Create a Service Principal:
+`az ad sp create-for-rbac --name "github-actions" --role contributor --scopes /subscriptions/<SUBSCRIPTION_ID>/resourceGroups/<RESOURCE_GROUP> --sdk-auth`
+
+Hide Azure subscription ID from printing out in the GitHUb Actions:
+` null`
+
 ![image](https://github.com/ZCHAnalytics/K8s-resume-with-tf-azure-pwsh/assets/146954022/29d71b2d-f7a1-4af1-9239-46e364e77ec0)
 
 ## Project Directory 
