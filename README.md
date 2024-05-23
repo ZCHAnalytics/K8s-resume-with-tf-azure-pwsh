@@ -1,24 +1,33 @@
-# Kubernetes Resume Challenge - a Windows Version (with a dose of troubleshooting)
+# Adapting a CentOS-based Kubernetes Resume Challenge to Windows using PowerShell
 
-This is my take on the Kubernetes Resume Challenge using Terraform, Helm, Azure and Powershell. The Challenge is prepared by people behind CLoud Resume Challenge and KodeKloud Academy. JOin the challenge here: https://cloudresumechallenge.dev/docs/extensions/kubernetes-challenge/
+Introduction:
+This is a sample e-commerce application initially built to be deployed on CentOS systems. The goal was to adapt this application for deployment on a Windows environment using PowerShell. Below is the step-by-step process to achieve this. 
+The Challenge is prepared by people behind CLoud Resume Challenge and KodeKloud Academy. Join the challenge here: https://cloudresumechallenge.dev/docs/extensions/kubernetes-challenge/
 
-![image](https://github.com/ZCHAnalytics/k8s-resume-challenge/assets/146954022/1e4c4301-3355-420f-bf73-1cf34a692a89)
+![image](https://github.com/ZCHAnalytics/K8s-resume-with-tf-azure-pwsh/assets/146954022/725911e1-743d-4431-93ba-3cffba923956)
 
-The project was seemingly prepared for Linux environment, so I added an extra complexity by opting for a Windows environment and Powershell. This required some extra [windows troubleshooting](windows-troubleshooting). I also added extra step to use Terraform to make project closer to real-life scenarios where IaaS deployment are used. 
+# Project components
+Web app code: provided by KodeKloud.
+Configuration files for Docker: I configured them following challenge instructions 
+Kubernetes Manifest: I configured them following challenge instructions 
+Helm chart: I followed the instructions from the challenge
+CLI: Azure, Kubectl, Docker, Helm.
+OS: Windows 10, with WSL to run Docker Engine. 
+Attention to CRLF and LF,  and a bucketfull of sheer willpower... 
 
-# Pre-requisites 
-Azure, Kubectl, Docker, Terraform, Helm CLI, attention to CRLF and LF, source code from KodeKloud, and a bucketfull of sheer willpower... 
+[windows troubleshooting](windows-troubleshooting). 
 
-## Terrraform 
-I used Terraform to combined the creation of Azure Kubernetes Cluster, one pod for a MariaDB server and another one for Apache server to host website called "Retail Heaven".
-For specifics, please check this folder [terraform](terraform).
+I also added extra step to use Terraform to make project closer to real-life scenarios where IaaS deployment are used. 
 
-![image](https://github.com/ZCHAnalytics/K8s-resume-with-tf-azure-pwsh/assets/146954022/f732f709-77dd-44e8-89f8-bc0b8e986f17)
+## Deploy Kubernetes Cluster with Terrraform 
+I used Terraform to create an Azure Kubernetes Cluster. For specifics, please check this folder [terraform](terraform).
+
+![image](https://github.com/ZCHAnalytics/K8s-resume-with-tf-azure-pwsh/assets/146954022/eb0e0efa-63c7-45bc-83c3-5566d0615575)
 
 ## Helm 
-Using Helm was an extra credit! So I helmified all yaml files and created a chart that used Azure Kubernetes Cluster to configure environmentla variables, create database, new user with full privileges to create table 'products' and populate it with values. The end result is the retail website! You can check my helm files here [helm](helm).
+Using Helm was an extra credit! I helmified all yaml files and created a chart that used Azure Kubernetes Cluster to configure environmentla variables, create database, new user with full privileges to create table 'products' and populate it with values. The end result is the retail website! You can check my helm files here [helm](helm).
 
-## CI/CD with GitHub Workflows
+## Build and Deploy Docker Image with GitHub Workflows
 - GitHub secrets and tokens 
 [.github/workflows](.github/workflows/deploy.yml)
 
@@ -121,6 +130,7 @@ If I set the toggle to false and re-apply configmap and deploy again, the websit
 
 ![image](https://github.com/ZCHAnalytics/k8s-resume-challenge/assets/146954022/67bc7793-10ee-46b7-b845-0600c4122734)
 
+
 ## Step 9: Roll back to the previous version.
 - [x] Identify Issue: After deployment, monitoring tools indicate a problem affecting user experience.
 - [x] Roll Back: Execute kubectl rollout undo deployment/ecom-web to revert to the previous deployment state.
@@ -176,7 +186,16 @@ mysql -u simplymaria -p
 - [x] Package and Deploy: Use Helm commands to package your application into a chart and deploy it to your Kubernetes cluster. Ensure to test your chart to verify that all components are correctly configured and working as expected.
 ```
 helm create retail-therapy-app
+helm install retail-therapy-app ./helm
+helm upgrade retail-therapy-app ./helm/app-with-banner
 ```
+![image](https://github.com/ZCHAnalytics/K8s-resume-with-tf-azure-pwsh/assets/146954022/e6e0db7c-b145-4e18-ba38-814d12f86830)
+
+![image](https://github.com/ZCHAnalytics/K8s-resume-with-tf-azure-pwsh/assets/146954022/98b44929-53d2-45df-a221-da7f53020849)
+
+![image](https://github.com/ZCHAnalytics/K8s-resume-with-tf-azure-pwsh/assets/146954022/60e102cc-7c27-4633-bd3a-68643fd0dc6b)
+
+
 ## Extra credit - Implement Persistent Storage for the MariaDB database across pod restarts and redeployments.
 - [x] Create a PVC: Define a PersistentVolumeClaim for MariaDB storage needs.
 - [x] Update MariaDB Deployment: Modify the deployment to use the PVC for storing database data.
