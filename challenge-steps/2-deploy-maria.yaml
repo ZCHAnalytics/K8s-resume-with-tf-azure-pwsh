@@ -25,6 +25,7 @@ spec:
         - name: DB_PASSWORD
           value: spillYourBeans
 
+
         volumeMounts:
         - name: and-sql-configured-maria
           mountPath: /docker-entrypoint-initdb.d/create-my-bliss.sql
