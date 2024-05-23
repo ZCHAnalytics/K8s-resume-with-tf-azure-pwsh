@@ -75,3 +75,18 @@ kubectl exec -it <pod_name> -- env | findstr FEATURE_DARK_MODE
 
 # onliners
  kubectl delete configmaps and-sky-configured-maria && kubectl delete deploy a-pod-for-maria && kubectl apply -f 12-2-cm-db.yaml && kubectl apply -f 12-3-dp-db.yaml && kubectl get pods
+
+
+USEFUL COMMANDS:
+kubectl exec -it <pod_name> -- /bin/bash
+mysql -u <username> -p<password>-uro
+SELECT User FROM mysql.user;
+mysql -u simplymaria -p
+
+github:
+Cheats: as kubectl config can be rather large, good to check what is in there
+```pwsh
+kubeConfig = kubectl config view --minify --context=aks-retail-rg-5603
+base64EncodedConfig = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($kubeConfig))
+base64EncodedConfig
+```
