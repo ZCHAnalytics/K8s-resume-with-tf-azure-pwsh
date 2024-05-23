@@ -1,0 +1,33 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: mariadb-pre-install
+  labels:
+    app: mariadb
+    chart: {{ include "mariadb.fullname" . }}
+    release: {{ .Release.Name }}
+spec:
+  template:
+    spec:
+      restartPolicy: Never    
+      containers:
+        - name: mariadb-pre-install
+          image: "{{ .Values.mariadb.image }}:{{ .Values.mariadb.tag }}"
+          imagePullPolicy: {{ .Values.mariadb.pullPolicy }}
+          ports:
+          - containerPort: 3306        
+          env:
+          - name: MYSQL_ROOT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: little-secrets
+                key: MYSQL_ROOT_PASSWORD
+          # Add additional container configuration as needed
+          command: ["/bin/sh", "-c"]
+          args:
+            - |               
+              while ! mysqladmin ping -h mariadb-service -u root -p"{{ .Values.mariadb.rootPassword }}" --silent; do
+                echo "Waiting for MariaDB to be ready..."
+                sleep 5
+              done
+

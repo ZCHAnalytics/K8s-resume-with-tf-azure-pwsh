@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: a-pod-for-retail-therapy
+spec: # specs for deployment resource
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: php
+  template: # blueprint for pods
+    metadata:
+      labels:
+        app: php
+    spec: # specs for web server pod
+      containers:
+      - name: apache
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - containerPort: 80
+        env: 
+        # Step 4. Add environment variables
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.db.passwordSecretName }}
+              key: {{ .Values.db.passwordSecretKey }}
+        - name: DB_HOST
+          value: "{{ .Values.db.host }}"
+        - name: DB_NAME
+          value: "{{ .Values.db.name }}"
+        - name: DB_USER
+          value: "{{ .Values.db.user }}"
+
+        # Step 6. Add a dark mode toggle 
+        - name: FEATURE_DARK_MODE
+          valueFrom:
+            configMapKeyRef:
+              name: and-sky-configured-toggle-and-probes
+              key: FEATURE_DARK_MODE
+
+        # Step 11 Add probes
+        livenessProbe:
+          httpGet:
+            path: /probes/alive-and-kicking.php
+            port: 80
+          initialDelaySeconds: 15
+          periodSeconds: 30
+
+        readinessProbe:
+          httpGet:
+            path: /probes/alive-and-kicking.php
+            port: 80
+          initialDelaySeconds: 10
+          periodSeconds: 5        
+        
+        volumeMounts:
+        - name: probes-volume
+          mountPath: /var/www/html/probes
+
+      # Step 11. Add volume for probes configmap
+      volumes:          
+      - name: probes-volume
+        configMap:
+          name: and-sky-configured-toggle-and-probes

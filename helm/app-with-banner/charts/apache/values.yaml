@@ -1,0 +1,21 @@
+db:
+  name: "simplydatabase"
+  user: "simplymaria"
+  host: "at-your-service"
+  passwordSecretName: "little-secrets"
+  passwordSecretKey: "DB_PASSWORD"
+
+featureDarkMode: "false" # "true"
+
+image:
+  repository: zulfiaa/retail-apache
+  tag: v2
+  pullPolicy: IfNotPresent
+
+replicaCount: 1
+
+hpa:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 10
+  cpu: 50

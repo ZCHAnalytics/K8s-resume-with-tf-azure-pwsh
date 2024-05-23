@@ -1,0 +1,16 @@
+db:
+#  name: "simplydatabase"
+#  user: "simplymaria"
+#  host: "at-your-service"
+#  passwordSecretName: "little-secrets"
+#  passwordSecretKey: "DB_PASSWORD"
+  rootPasswordSecretName: "little-secrets"
+  rootPasswordSecretKey: "MYSQL_ROOT_PASSWORD"
+
+mariadb:
+  image: mariadb
+  tag: 10.2.20
+  pullPolicy: IfNotPresent
+
+replicaCount: 1
+
