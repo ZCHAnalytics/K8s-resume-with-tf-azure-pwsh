@@ -48,12 +48,12 @@ jobs:
           AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
         run: |
           az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET --tenant $AZURE_TENANT_ID > /dev/null
-#          az aks get-credentials --resource-group retail-haven-rg-8366 --name aks-retail-haven-rg-8366 --overwrite-existing
+          az aks get-credentials --resource-group retail-haven-rg-8366 --name aks-retail-haven-rg-8366 --overwrite-existing
 
-      - name: Set up kubectl
-        uses: azure/setup-kubectl@v1
-        with:
-          kubeconfig: ${{ secrets.KUBE_CONFIG }}
+  #    - name: Set up kubectl
+ #       uses: azure/setup-kubectl@v1
+  #      with:
+   #       kubeconfig: ${{ secrets.KUBE_CONFIG }}
 
       - name: Deploy to Kubernetes using kubectl
         run: |
