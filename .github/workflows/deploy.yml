@@ -49,12 +49,13 @@ jobs:
         run: |
           az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET --tenant $AZURE_TENANT_ID > /dev/null
           az aks get-credentials --resource-group retail-haven-rg-8366 --name aks-retail-haven-rg-8366 --overwrite-existing
-
-  #    - name: Set up kubectl
- #       uses: azure/setup-kubectl@v1
-  #      with:
-   #       kubeconfig: ${{ secrets.KUBE_CONFIG }}
-
-      - name: Deploy to Kubernetes using kubectl
+      
+      - name: Install Helm
         run: |
-          kubectl set image deployment/a-pod-for-retail-therapy a-pod-for-retail-therapy=zulfiaa/retail-apache:v2
+          curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
+          chmod +x get_helm.sh
+          ./get_helm.sh
+  
+      - name: Deploy with Helm
+        run: |
+          helm upgrade --install retail-therapy ../helm
