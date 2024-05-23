@@ -14,7 +14,7 @@ spec: # specs for deployment resource
     spec: # specs for web server pod
       containers:
       - name: apache
-        image: zulfiaa/ecom-web:v3
+        image: zulfiaa/reatil-apache:v2
         ports:
         - containerPort: 80
         # Step 11 Add probes

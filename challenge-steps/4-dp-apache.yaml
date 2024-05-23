@@ -14,7 +14,7 @@ spec: # specs for deployment resource
     spec: # specs for web server pod
       containers:
       - name: apache
-        image: zulfiaa/ecom-web:v1
+        image: zulfiaa/retail-apache:v1
         ports:
         - containerPort: 80
         

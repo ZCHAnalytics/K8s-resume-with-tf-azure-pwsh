@@ -31,7 +31,7 @@ jobs:
       with:
         context: .
         push: true
-        tags: zulfiaa/retail-apache:v1
+        tags: zulfiaa/retail-apache:v3
 
   deploy:
     needs: build
@@ -52,7 +52,7 @@ jobs:
 
     - name: Deploy to Kubernetes
       run: |
-        kubectl set image deployment/a-pod-for-retail-therapy a-pod-for-retail-therapy=zulfiaa/retail-apache:v1
+        kubectl set image deployment/a-pod-for-retail-therapy a-pod-for-retail-therapy=zulfiaa/retail-apache:v3
 
 # [Convert]::ToBase64String([System.IO.File]::ReadAllBytes("C:\Users\zulfi\.kube\config")) > kubeconfig.base64
 

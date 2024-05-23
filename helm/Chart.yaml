@@ -1,0 +1,13 @@
+apiVersion: v2
+name: retail-haven-app
+description: A Helm chart for deploying Mariadb and Apache
+version: 0.1.0
+
+dependencies:
+  - name: mariadb
+    version: 0.1.0
+    repository: ./charts/mariadb
+
+  - name: apache
+    version: 0.1.0
+    repository: ./charts/apache

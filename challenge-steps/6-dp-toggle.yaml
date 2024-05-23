@@ -14,7 +14,7 @@ spec: # specs for deployment resource
     spec: # specs for web server pod
       containers:
       - name: apache
-        image: zulfiaa/ecom-web:v1 # image without dark mode and banner
+        image: zulfiaa/ecom-web:v1 # image without the promotional banner
         ports:
         - containerPort: 80
 
@@ -35,21 +35,4 @@ spec: # specs for deployment resource
             configMapKeyRef:
               name: and-sky-configured-toggle
               key: FEATURE_DARK_MODE
-
-        volumeMounts:
-        # Step 6. Adding dark mode style file
-        - name: config-toggle-volume
-          mountPath: /var/www/html/css/dark-mode.css
-          subPath: dark-mode.css
-
-        # Step 6. Replacing index.php file  
-        - name: config-toggle-volume
-          mountPath: /var/www/html/index.php
-          subPath: index.php       
-      
-      volumes:
-      # Step 6. Adding a toggle feature in ConfigMap
-      - name: config-toggle-volume
-        configMap:
-          name: and-sky-configured-toggle
       

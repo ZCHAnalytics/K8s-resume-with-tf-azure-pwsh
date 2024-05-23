@@ -14,7 +14,7 @@ spec: # specs for deployment resource
     spec: # specs for web server pod
       containers:
       - name: apache
-        image: zulfiaa/ecom-web:v3 # Image with revised index.php with banner, and a dark-mode.css from Step 6
+        image: zulfiaa/retail-apache:v2 # Step 8. Image with promotional banner
         ports:
         - containerPort: 80
         # Step 4. Adding environment variables
