@@ -30,7 +30,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: zulfiaa/retail-apache:v3
+          tags: zulfiaa/retail-apache:v2
 
   deploy:
     needs: build
@@ -40,16 +40,21 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
       
-      - name: Login to Azure
-        uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
-
-      - name: Set up Azure CLI
+      - name: Azure Login
+        env:
+          AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+          AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+          AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
         run: |
-          az login --service-principal -u ${{ secrets.AZURE_CLIENT_ID }} -p ${{ secrets.AZURE_CLIENT_SECRET }} --tenant ${{ secrets.AZURE_TENANT_ID }}
-          az aks get-credentials --resource-group retail-haven-rg-8366 --name aks-retail-haven-rg-8366 --overwrite-existing
+          az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET --tenant $AZURE_TENANT_ID > /dev/null
+#          az aks get-credentials --resource-group retail-haven-rg-8366 --name aks-retail-haven-rg-8366 --overwrite-existing
+
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v1
+        with:
+          kubeconfig: ${{ secrets.KUBE_CONFIG }}
 
       - name: Deploy to Kubernetes using kubectl
         run: |
-          kubectl set image deployment/a-pod-for-retail-therapy a-pod-for-retail-therapy=zulfiaa/retail-apache:v3
+          kubectl set image deployment/a-pod-for-retail-therapy a-pod-for-retail-therapy=zulfiaa/retail-apache:v2
