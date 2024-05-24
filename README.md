@@ -9,12 +9,12 @@ Join the challenge [here](https://cloudresumechallenge.dev/docs/extensions/kuber
 ![image](https://github.com/ZCHAnalytics/K8s-resume-with-tf-azure-pwsh/assets/146954022/725911e1-743d-4431-93ba-3cffba923956)
 
 ## Key Skills and Technologies
-Kubernetes: Cluster creation, deployment, scaling, rolling updates, autoscaling.
-Docker: Containerizing applications, creating Dockerfiles, pushing images to Docker Hub.
-PowerShell: Automating tasks, managing Azure resources.
-Azure: Creating and managing resources using CLI and Terraform.
-CI/CD: Setting up GitHub Actions workflows.
-Configuration Management: Using ConfigMaps and Secrets in Kubernetes.
+- Kubernetes: Cluster creation, deployment, scaling, rolling updates, autoscaling.
+- Docker: Containerizing applications, creating Dockerfiles, pushing images to Docker Hub.
+- PowerShell: Automating tasks, managing Azure resources.
+- Azure: Creating and managing resources using CLI and Terraform.
+- CI/CD: Setting up GitHub Actions workflows.
+- Configuration Management: Using ConfigMaps and Secrets in Kubernetes.
 
 ## Challenge infrastructure
 - [Sample e-commerce website code](https://github.com/kodekloudhub/learning-app-ecommerce) by KodeKloud.
@@ -25,7 +25,7 @@ Configuration Management: Using ConfigMaps and Secrets in Kubernetes.
 ## Challenge Optonal Extra Credits: 
 - [Helm chart](helm) configuration.
 - [Persistent Storage for the Database](persistent-storage)
-- [CI/CD Pipeline](.github) using secrets and zero output login commands. 
+- [CI/CD Pipeline](github) using secrets and zero output login commands. 
 
 ## Centos to Windows Conversion requirements
 - WSL to run Docker Engine
@@ -57,6 +57,7 @@ When building and pushing this [Docker image](Dockerfile), I opened a WSL termin
 
 ## Step 3. Set up Kubernetes on a Public Cloud Provider
 - [x] Cluster creation
+- [ ] 
 In this [file](azure-commands.md) you can see the relevant commands for creating a cluster on Azure and deleted it after the challenge is completed. At a later stage, I used [Terraform](terraform) to deploy the Azure Infrastructure.
 
 ![image](https://github.com/ZCHAnalytics/K8s-resume-with-tf-azure-pwsh/assets/146954022/eb0e0efa-63c7-45bc-83c3-5566d0615575)
@@ -72,7 +73,7 @@ To test, lets enter the container and run some commands, for instance in databas
 - [x] Service creation with Load Balancer
 We could choose to do this step via CLI command or a yaml file. 
 Via CLI:
-kubectl expose deploy/deploy-retail-therapy --port 80 --target-port 80 --type LoadBalancer --name=php-service
+`kubectl expose deploy/<deployment name> --port 80 --target-port 80 --type LoadBalancer --name=<external service name>`
 
 ![image](https://github.com/ZCHAnalytics/kubernetes-challenge/assets/146954022/93e1fd2b-9230-4e50-b3a6-6143d1f7f478)
 
@@ -85,13 +86,13 @@ With a [service manifest](5-service-apache.yaml)
 
 It turns out it was not 'simple' at all. The source code had either missing dependencies (probably due to five years passed since it first creation) or the relevant css and php snippets were deliberately left out to make the Challenge even more challenging. 
 
-This was my first time using php and css style. I created very simple dark-mode css file just to demonstrate how dynamic toggles can me introduced and managed. However, this css style would not pass the production standards. 
+This was my first time using php and css style. I created very simple [dark-mode.css](dark-mode.css) file just to demonstrate how dynamic toggles can me introduced and managed.
 
 If I set the toggle to false and re-apply configmap and deploy again, the website reverts to default light background. 
 
 ## Step 7: Scale Web Application to prepare for a marketing campaign expected to triple traffic.
 - [x] Evaluate Current Load with `kubectl get pods` to assess the current number of running pods
-- [x] Increase replicas in deployment or use `kubectl scale deployment/ecom-web --replicas=6` to handle the increased load
+- [x] Increase replicas in deployment or use `kubectl scale deployment/<name> --replicas=6` to handle the increased load
 - [x] Observe the deployment scaling up with `kubectl get pods`
 
 ![image](https://github.com/ZCHAnalytics/k8s-resume-challenge/assets/146954022/8213670e-9e45-45bb-81ed-4b4b75b768e5)
@@ -120,7 +121,7 @@ My promotional banner snippet was just a demonstration of how rolling update and
 - [x]  Simulate Load: Use a tool like Apache Bench to generate traffic and increase CPU load.
 - [x]  Monitor Autoscaling: Observe the HPA in action with `kubectl get hpa`.
 
-This can be done thoruhg a [file](10-autoscale.yaml) or with a CLI command:
+This can be done thoruhg a [file](challenge-steps/10-autoscale.yaml) or with a CLI command:
 kubectl autoscale deployment a-pod-for-retail-therapy --cpu-percent=50 --min=2 --max=10
 ab -n 100 -c 10 URL
 
@@ -170,7 +171,7 @@ helm upgrade retail-therapy-app ./helm/app-with-banner
 
 I needed to create a Service Principal for the resource group, then configure Docker and Azure credentials as Github secrets.
 Service Principal: 
-`az ad sp create-for-rbac --name "github-actions" --role contributor --scopes /subscriptions/<SUBSCRIPTION_ID>/resourceGroups/<RESOURCE_GROUP>`
+`az ad sp create-for-rbac --name "github-actions" --role contributor --scopes /subscriptions/<your subscription ID>/resourceGroups/<your resource group name>`
 
 Hide Azure subscription ID from printing out in the GitHUb Actions by adding > /dev/null to the azure login command, like this:
 `az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET --tenant $AZURE_TENANT_ID > /dev/null`
