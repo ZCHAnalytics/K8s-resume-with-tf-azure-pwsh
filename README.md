@@ -18,22 +18,22 @@ Join the challenge [here](https://cloudresumechallenge.dev/docs/extensions/kuber
 
 ## Challenge infrastructure
 - [Sample e-commerce website code](https://github.com/kodekloudhub/learning-app-ecommerce) by KodeKloud.
-- [Dockerfile configuration](Dockerfile) that uses [slightly updated source code](abundant-source-no-banner). 
+- [Dockerfile configuration](Dockerfile) that uses [slightly updated source code](docker-src-no-banner). 
 - [Kubernetes Manifests](challenge-steps) configured following the challenge instructions.
 - Command Line assistants for Azure, Kubectl, Docker, Helm.
 
 ## Challenge Optonal Extra Credits: 
 - [Helm chart](helm) configuration.
 - [Persistent Storage for the Database](persistent-storage)
-- [CI/CD Pipeline](github) using secrets and zero output login commands. 
+- [CI/CD Pipeline](.github) using secrets and zero output login commands. 
 
 ## Centos to Windows Conversion requirements
 - WSL to run Docker Engine
-- Attention to CRLF and LF
+- Conversion from [CRLF to LF](troubleshooting/windows-to-unix.md)
 - and a bucketfull of sheer willpower... 
 
 ## Note on Azure authentication on GitHub 
-Using Azure CLI can accidentally reveal subscriptionID during the pipeline run as credential are printed out as JSON output. The login commands can be modified to prevent such accidental secrets disclosure. 
+Using Azure CLI can accidentally reveal subscriptionID during the pipeline run as credential are printed out as JSON output. i configured the pipeline [deploy.yml](.github/workflows/deploy.yml) file to prevent accidental secrets disclosure. 
 
 # Step by Step Process 
   
@@ -51,42 +51,42 @@ First, I copied the source code to the project directory (as an archive, without
   ```pwsh
   & { mkdir abundant_source ; cd abundant_source ; curl -sL <link>/archive/master.tar.gz | tar -xzf - --strip-components=1 } | Out-Null
   ```
-Second, I used the provided arguments in mysqli function to correctly define database variables in Kubernetes manifests. This way, the apache container can interpolate the values from the cluster environment to retrieve products info from the database in a separate container.
+Second, I used the provided arguments in mysqli function to correctly define database variables in Kubernetes manifests. This way, the apache container can use Kubernetes variables to access the database in a separate container.
 
 When building and pushing this [Docker image](Dockerfile), I opened a WSL terminal so that Docker Engine can run. As soon as the images are pushed to Docker Hub, I close the Docker Engine to avoid clogging my RAM. 
 
 ## Step 3. Set up Kubernetes on a Public Cloud Provider
 - [x] Cluster creation
-- [ ] 
+
 In this [file](azure-commands.md) you can see the relevant commands for creating a cluster on Azure and deleted it after the challenge is completed. At a later stage, I used [Terraform](terraform) to deploy the Azure Infrastructure.
 
 ![image](https://github.com/ZCHAnalytics/K8s-resume-with-tf-azure-pwsh/assets/146954022/eb0e0efa-63c7-45bc-83c3-5566d0615575)
 
 ## Step 4: Deploy E-commerce Website to Kubernetes
 - [x] 4.1. Kubernetes deployment 
-The initial deployment uses hardcorded variables but this will change after Step 12. 
-To test, lets enter the container and run some commands, for instance in database container:
+
+The initial deployment uses hardcorded variables but this will change after Step 12. To test, lets enter the container and run some commands:
 
 ![image](https://github.com/ZCHAnalytics/kubernetes-challenge/assets/146954022/a80ebcca-5b73-4010-af0f-5bfa3d95c91b)
 
 ## Step 5: Expose Your Website [v]
 - [x] Service creation with Load Balancer
-We could choose to do this step via CLI command or a yaml file. 
+
+We could choose to do this step via CLI command or a [service yaml](challenge-steps/5-service-apache.md) file. 
 Via CLI:
 `kubectl expose deploy/<deployment name> --port 80 --target-port 80 --type LoadBalancer --name=<external service name>`
 
 ![image](https://github.com/ZCHAnalytics/kubernetes-challenge/assets/146954022/93e1fd2b-9230-4e50-b3a6-6143d1f7f478)
 
-With a [service manifest](5-service-apache.yaml)
 
 ## Step 6: Implement Configuration Management by add a feature toggle
 - [x] Create a ConfigMap with the data FEATURE_DARK_MODE=true
 - [x] Update Deployment to include the environment variable from the ConfigMap
-- [x] Then we need to add a 'simple feature toggle' in the application code (e.g., an environment variable FEATURE_DARK_MODE that enables a CSS dark theme). 
+- [x] Update application code to add a 'simple feature toggle' 
 
 It turns out it was not 'simple' at all. The source code had either missing dependencies (probably due to five years passed since it first creation) or the relevant css and php snippets were deliberately left out to make the Challenge even more challenging. 
 
-This was my first time using php and css style. I created very simple [dark-mode.css](abundant-source-no-banner/css/dark-mode.css) file just to demonstrate how dynamic toggles can me introduced and managed. Also, I added a snippet to the head area of the index.php file:
+I created very simple [dark-mode.css](abundant-source-no-banner/css/dark-mode.css) file just to demonstrate how dynamic toggles can me introduced and managed. Also, I added a snippet to the head area of the index.php file:
 ```html
     <?php
         $dark_mode_enabled = getenv("FEATURE_DARK_MODE") === "true";
@@ -128,7 +128,7 @@ My promotional banner snippet was just a demonstration of how rolling update and
 - [x]  Simulate Load: Use a tool like Apache Bench to generate traffic and increase CPU load.
 - [x]  Monitor Autoscaling: Observe the HPA in action with `kubectl get hpa`.
 
-This can be done thoruhg a [file](challenge-steps/10-autoscale.yaml) or with a CLI command:
+This can be done configuring a [file](challenge-steps/10-autoscale.yaml) or with a CLI command:
 kubectl autoscale deployment a-pod-for-retail-therapy --cpu-percent=50 --min=2 --max=10
 ab -n 100 -c 10 URL
 
@@ -182,11 +182,7 @@ Finally, secrets! Kubernetes needs password to be converted into a binary string
 - [x] Create Helm Chart 
 - [x] Customize the deployment by defining variables in the values.yaml file.
 - [x] Use Helm commands to package the application into a chart and deploy to to your Kubernetes cluster.
-```helm
-helm create retail-therapy-app
-helm install retail-therapy-app ./helm
-helm upgrade retail-therapy-app ./helm/app-with-banner
-```
+
 ![image](https://github.com/ZCHAnalytics/K8s-resume-with-tf-azure-pwsh/assets/146954022/e6e0db7c-b145-4e18-ba38-814d12f86830)
 
 ![image](https://github.com/ZCHAnalytics/K8s-resume-with-tf-azure-pwsh/assets/146954022/98b44929-53d2-45df-a221-da7f53020849)
@@ -197,14 +193,18 @@ helm upgrade retail-therapy-app ./helm/app-with-banner
 - [x] Define a PersistentVolumeClaim for MariaDB storage needs.
 - [x] Modify the deployment to use the PVC for storing database data.
 
+I configured these [files](persistent-storage) for deployment without Helm. I also included them in [mariadb helm release](helm/charts/mariadb/templates) configuration.
+
 ## Extra credit - Implement Basic CI/CD Pipeline
 - [x] GitHub Actions Workflow.
 
 I needed to create a Service Principal for the resource group, then configure Docker and Azure credentials as Github secrets.
 Service Principal: 
+
 `az ad sp create-for-rbac --name "github-actions" --role contributor --scopes /subscriptions/<your subscription ID>/resourceGroups/<your resource group name>`
 
 Hide Azure subscription ID from printing out in the GitHUb Actions by adding > /dev/null to the azure login command, like this:
+
 `az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET --tenant $AZURE_TENANT_ID > /dev/null`
 
 ![image](https://github.com/ZCHAnalytics/K8s-resume-with-tf-azure-pwsh/assets/146954022/29d71b2d-f7a1-4af1-9239-46e364e77ec0)
