@@ -1,4 +1,4 @@
-# Adapting a CentOS-based Kubernetes Resume Challenge to Windows using PowerShell
+dark# Adapting a CentOS-based Kubernetes Resume Challenge to Windows using PowerShell
 
 Introduction:
 
@@ -86,8 +86,15 @@ With a [service manifest](5-service-apache.yaml)
 
 It turns out it was not 'simple' at all. The source code had either missing dependencies (probably due to five years passed since it first creation) or the relevant css and php snippets were deliberately left out to make the Challenge even more challenging. 
 
-This was my first time using php and css style. I created very simple [dark-mode.css](dark-mode.css) file just to demonstrate how dynamic toggles can me introduced and managed.
-
+This was my first time using php and css style. I created very simple [dark-mode.css](abundant-source-no-banner/css/dark-mode.css) file just to demonstrate how dynamic toggles can me introduced and managed. Also, I added a snippet to the head area of the index.php file:
+```html
+    <?php
+        $dark_mode_enabled = getenv("FEATURE_DARK_MODE") === "true";
+            if ($dark_mode_enabled) {
+                echo '<link rel="stylesheet" href="css/dark-mode.css">';
+            }
+    ?>
+```
 If I set the toggle to false and re-apply configmap and deploy again, the website reverts to default light background. 
 
 ## Step 7: Scale Web Application to prepare for a marketing campaign expected to triple traffic.
@@ -135,7 +142,31 @@ After:
 - [x]    Add liveness and readiness probes, targeting an endpoint in application that confirms its operational status.
 - [x]    Simulate failure scenarios (e.g., manually stopping the application) and observe Kubernetes’ response. 
 
-Again, I searched the soure code for any endpoint and found none and so had to create an additional php file.
+Again, I searched the soure code for any endpoint and found none and so had to create an additional [alive-and-kicking.php](challenge-steps/) file that is added using ConfigMap.
+```html
+    <?php
+    $dbHost = getenv('DB_HOST');
+    $dbUser = getenv('DB_USER');
+    $dbPassword = 'spillYourBeans';
+    $dbName = getenv('DB_NAME');
+
+    $link = mysqli_connect($dbHost, $dbUser, $dbPassword, $dbName);
+
+    if ($link) {
+        $res = mysqli_query($link, "SELECT * FROM products LIMIT 1;");
+        if ($res) {
+            http_response_code(200);
+            echo "Application is healthy";
+        } else {
+            http_response_code(500);
+            echo "Application is not healthy: unable to query the database";
+        }
+    } else {
+        http_response_code(500);
+        echo "Application is not healthy: unable to connect to the database";
+    }
+    ?>
+```
 
 ## Step 12: Utilize ConfigMaps and Secrets
 - [x]    Use secrets for sensitive data like DB credentials
