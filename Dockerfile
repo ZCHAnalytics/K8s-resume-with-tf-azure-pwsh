@@ -11,4 +11,4 @@ RUN apt-get update && \
 # Set the working directory
 WORKDIR /var/www/html
 
-COPY abundant-source-no-banner/ /var/www/html/
+COPY docker-src-no-banner/ /var/www/html/
