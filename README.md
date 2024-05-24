@@ -1,6 +1,7 @@
 # Adapting a CentOS-based Kubernetes Resume Challenge to Windows using PowerShell
 
 Introduction:
+
 This is a sample e-commerce application initially built to be deployed on CentOS systems. My goal was to adapt this application for deployment on a Windows environment using PowerShell and a sprinkle of [Terraform](terraform). The point of doing it was to demonstrate how Kubernetes deployment works across systems.
 
 Join the challenge [here](https://cloudresumechallenge.dev/docs/extensions/kubernetes-challenge/)!
@@ -22,7 +23,7 @@ Configuration Management: Using ConfigMaps and Secrets in Kubernetes.
 - Command Line assistants for Azure, Kubectl, Docker, Helm.
 
 ## Challenge Optonal Extra Credits: 
-- [Helm chart](helm) configuration following the instructions.
+- [Helm chart](helm) configuration.
 - [Persistent Storage for the Database](persistent-storage)
 - [CI/CD Pipeline](.github) using secrets and zero output login commands. 
 
@@ -32,16 +33,16 @@ Configuration Management: Using ConfigMaps and Secrets in Kubernetes.
 - and a bucketfull of sheer willpower... 
 
 ## Note on Azure authentication on GitHub 
-Using Azure CLI can accidentally reveal subscriptionID during the pipeline run as credential are printed out as JSON output. The login commands can be modified to prevent an accidental secrets disclosure. 
+Using Azure CLI can accidentally reveal subscriptionID during the pipeline run as credential are printed out as JSON output. The login commands can be modified to prevent such accidental secrets disclosure. 
 
 # Step by Step Process 
   
 ## Step 1: Certification
-KodeKloud offers the Certified Kubernetes Application Developer (CKAD) course to equip developers with the knowledge and skills needed to tackle this challenge effectively. 
-I am very keen to get a Kubernetes certification, as soon as I finished preparing for the Terraform Associate exam! Watch this space.... 
+KodeKloud offers the [Certified Kubernetes Application Developer (CKAD) course](https://kodekloud.com/courses/certified-kubernetes-application-developer-ckad/) to equip developers with the knowledge and skills needed to tackle this challenge effectively. 
+I am very keen to get a Kubernetes certification, as soon as I finished preparing for the [Terraform Associate exam](https://github.com/ZCHAnalytics/terraform-associate-prep)! Watch this space.... 
 
 ## Step 2: Containerise E-Commerce Website and Database
-- [x] Create a Dockerfile with php:7.4-apache base image, mysqli extension, the application source code.
+- [x] Create a Dockerfile with php-apache base image, mysqli extension, and the application source code.
 - [x] Update database connection strings to point to a Kubernetes service named mysql-service.
 - [x] Build and Push the Docker Image
 - [x] Database Containerization
@@ -55,7 +56,7 @@ Second, I used the provided arguments in mysqli function to correctly define dat
 When building and pushing this [Docker image](Dockerfile), I opened a WSL terminal so that Docker Engine can run. As soon as the images are pushed to Docker Hub, I close the Docker Engine to avoid clogging my RAM. 
 
 ## Step 3. Set up Kubernetes on a Public Cloud Provider
-- [x] Cluster creation.
+- [x] Cluster creation
 In this [file](azure-commands.md) you can see the relevant commands for creating a cluster on Azure and deleted it after the challenge is completed. At a later stage, I used [Terraform](terraform) to deploy the Azure Infrastructure.
 
 ![image](https://github.com/ZCHAnalytics/K8s-resume-with-tf-azure-pwsh/assets/146954022/eb0e0efa-63c7-45bc-83c3-5566d0615575)
@@ -78,40 +79,39 @@ kubectl expose deploy/deploy-retail-therapy --port 80 --target-port 80 --type Lo
 With a [service manifest](5-service-apache.yaml)
 
 ## Step 6: Implement Configuration Management by add a feature toggle
-- [x] Create a ConfigMap with the data FEATURE_DARK_MODE=true.
-- [x] Deploy ConfigMap.
-- [x] Update Deployment to include the environment variable from the ConfigMap.
+- [x] Create a ConfigMap with the data FEATURE_DARK_MODE=true
+- [x] Update Deployment to include the environment variable from the ConfigMap
 - [x] Then we need to add a 'simple feature toggle' in the application code (e.g., an environment variable FEATURE_DARK_MODE that enables a CSS dark theme). 
 
 It turns out it was not 'simple' at all. The source code had either missing dependencies (probably due to five years passed since it first creation) or the relevant css and php snippets were deliberately left out to make the Challenge even more challenging. 
 
-This was my first time using php. Coincidentally, my kid had asked for help with school project on html and css. This gave me wings to learn website building languages at speed. I created very simple dark-mode css file just to demonstrate how dynamic toggles can me introduced and managed. However, this css style would not pass the production standards. 
+This was my first time using php and css style. I created very simple dark-mode css file just to demonstrate how dynamic toggles can me introduced and managed. However, this css style would not pass the production standards. 
 
 If I set the toggle to false and re-apply configmap and deploy again, the website reverts to default light background. 
 
 ## Step 7: Scale Web Application to prepare for a marketing campaign expected to triple traffic.
-- [x] Evaluate Current Load with `kubectl get pods` to assess the current number of running pods.
-- [x] Scale Up: Increase replicas in deployment or use `kubectl scale deployment/ecom-web --replicas=6` to handle the increased load.
-- [x] Monitor Scaling: Observe the deployment scaling up with `kubectl get pods`.
+- [x] Evaluate Current Load with `kubectl get pods` to assess the current number of running pods
+- [x] Increase replicas in deployment or use `kubectl scale deployment/ecom-web --replicas=6` to handle the increased load
+- [x] Observe the deployment scaling up with `kubectl get pods`
 
 ![image](https://github.com/ZCHAnalytics/k8s-resume-challenge/assets/146954022/8213670e-9e45-45bb-81ed-4b4b75b768e5)
 
 ![image](https://github.com/ZCHAnalytics/k8s-resume-challenge/assets/146954022/b74cdbc1-f1a9-4412-8795-93f30ba9e78f)
 
 ## Step 8: Perform a Rolling Update to include a new promotional banner for the marketing campaign.
-- [x]    Modify the web application’s code to include the promotional banner.
-- [x]    Build and Push New Image.
-- [x]    Rolling Update: Update deployment with the new image version and apply the changes.
-- [x]    Monitor Update: Use `kubectl rollout status deployment/<name>` to watch the rolling update process.
+- [x]    Modify the web application’s code to include the promotional banner
+- [x]    Build and Push New Image
+- [x]    Rolling Update: Update deployment with the new image version and apply the changes
+- [x]    Use `kubectl rollout status deployment/<name>` to watch the rolling update process.
 
-Again, as in step 6, there was not code for a promotional banner, so I added a zany snipper about trips to the Moon, with yellow background. 
+Again, as in Step 6, there was not code for a promotional banner, so I added a zany snipper about trips to the Moon, with yellow background. 
 
 ![image](https://github.com/ZCHAnalytics/k8s-resume-challenge/assets/146954022/67bc7793-10ee-46b7-b845-0600c4122734)
 
 ## Step 9: Roll back to the previous version.
-- [x] Identify Issue: After deployment, monitoring tools indicate a problem affecting user experience.
+- [x] Identify Issue: After deployment, monitoring tools indicate a problem affecting user experience (namely the zany yellow promotional banner).
 - [x] Execute `kubectl rollout undo deployment/<name>` to revert to the previous deployment state.
-- [x] Verify Rollback: Ensure the website returns to its pre-update state without the promotional banner.
+- [x] Verify Rollback: Ensure the website returns to its pre-update state (without the promotional banner).
 
 My promotional banner snippet was just a demonstration of how rolling update and rollbacks work, not for real-life scenarios. So was good to remove it (as moon inhabitants complained about the traffic). 
 
