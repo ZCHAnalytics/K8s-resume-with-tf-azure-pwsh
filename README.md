@@ -112,9 +112,9 @@ If I set the toggle to false and re-apply configmap and deploy again, the websit
 - [x]    Rolling Update: Update deployment with the new image version and apply the changes
 - [x]    Use `kubectl rollout status deployment/<name>` to watch the rolling update process.
 
-Again, as in Step 6, there was not code for a promotional banner, so I added a zany snipper about trips to the Moon, with yellow background. 
+Again, as in Step 6, there was not code for a promotional banner, so I added a zany snippet about trips to the Moon, with yellow background. 
 
-![image](https://github.com/ZCHAnalytics/k8s-resume-challenge/assets/146954022/67bc7793-10ee-46b7-b845-0600c4122734)
+![image](https://github.com/ZCHAnalytics/kubernetes-resume-challenge/assets/146954022/67bc7793-10ee-46b7-b845-0600c4122734)
 
 ## Step 9: Roll back to the previous version.
 - [x] Identify Issue: After deployment, monitoring tools indicate a problem affecting user experience (namely the zany yellow promotional banner).
