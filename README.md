@@ -1,4 +1,4 @@
-dark# Adapting a CentOS-based Kubernetes Resume Challenge to Windows using PowerShell
+# Adapting a CentOS-based Kubernetes Resume Challenge to Windows using PowerShell
 
 Introduction:
 
@@ -209,24 +209,3 @@ Hide Azure subscription ID from printing out in the GitHUb Actions by adding > /
 
 ![image](https://github.com/ZCHAnalytics/K8s-resume-with-tf-azure-pwsh/assets/146954022/29d71b2d-f7a1-4af1-9239-46e364e77ec0)
 
-## Project Directory 
-🌍  Project Directory Tree
-├───.github
-|       └───workflows/deploy.yml
-├───abundant-source-no-banner
-│       ├───css/dark-mode.css # new file for dark-mode 
-|       └───index.php # with added dark mode toggle
-├───challenge-steps/
-├───helm
-│   ├───app-with-banner/
-│   ├───charts/
-│   |   ├───apache/
-│   |   └───mariadb/
-|   ├───templates
-|   |   └───secrets.yaml
-│   └───Chart.yaml
-├───persistent-storage
-├───terraform
-│   └───main.tf
-|───troubleshooting/
-└───Dockerfile
