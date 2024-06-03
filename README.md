@@ -74,9 +74,6 @@ We could choose to do this step via CLI command or a [service yaml](challenge-st
 Via CLI:
 `kubectl expose deploy/<deployment name> --port 80 --target-port 80 --type LoadBalancer --name=<external service name>`
 
-![image](https://github.com/ZCHAnalytics/kubernetes-resume-challenge/assets/146954022/93e1fd2b-9230-4e50-b3a6-6143d1f7f478)
-
-
 ## Step 6: Implement configuration management with a feature toggle
 - [x] Create a configMap file with the data FEATURE_DARK_MODE=true
 - [x] Update deployment to include an environment variable from the ConfigMap
@@ -100,10 +97,6 @@ If I set the toggle to false and re-apply configmap and deploy again, the websit
 - [x] Increase replicas in deployment or use `kubectl scale deployment/<name> --replicas=6` to handle the increased load
 - [x] Observe the deployment scaling up with `kubectl get pods`
 
-![image](https://github.com/ZCHAnalytics/kubernetes-resume-challenge/assets/146954022/8213670e-9e45-45bb-81ed-4b4b75b768e5)
-
-![image](https://github.com/ZCHAnalytics/kubernetes-resume-challenge/assets/146954022/b74cdbc1-f1a9-4412-8795-93f30ba9e78f)
-
 ## Step 8: Perform a rolling update to include a new promotional banner.
 - [x]    Modify the web application’s code to include the promotional banner
 - [x]    Build and Push New Image
@@ -111,8 +104,6 @@ If I set the toggle to false and re-apply configmap and deploy again, the websit
 - [x]    Use `kubectl rollout status deployment/<name>` to watch the rolling update process.
 
 Again, as in Step 6, there was not code for a promotional banner, so I added a zany snippet about trips to the Moon, with yellow background. 
-
-![image](https://github.com/ZCHAnalytics/kubernetes-resume-challenge/assets/146954022/67bc7793-10ee-46b7-b845-0600c4122734)
 
 ## Step 9: Roll back to the previous version.
 - [x] Identify Issue: After deployment, monitoring tools indicate a problem affecting user experience (namely the zany yellow promotional banner).
@@ -129,12 +120,6 @@ My promotional banner snippet was just a demonstration of how rolling update and
 This can be done configuring a [file](challenge-steps/10-autoscale.yaml) or with a CLI command:
 kubectl autoscale deployment a-pod-for-retail-therapy --cpu-percent=50 --min=2 --max=10
 ab -n 100 -c 10 URL
-
-Before:
-![image](https://github.com/ZCHAnalytics/kubernetes-resume-challenge/assets/146954022/96861b3c-d5cd-4663-8eb3-eaabbd0af441)
-
-After:
-![image](https://github.com/ZCHAnalytics/kubernetes-resume-challenge/assets/146954022/02fc18a4-1f97-4c15-8a05-7eed9eb8ddf6)
 
 ## Step 11: Implement liveness and readiness probes.
 This ensures that the web application is restarted if it becomes unresponsive and doesn’t receive traffic until ready.
